@@ -19,9 +19,9 @@
   shell: >
     python -c "import crypt; print(crypt.crypt('
     {{- item.password if item.password is defined else
-     (lookup('password', bootstrap__secret_tree + item.name + '/pw') if
+     (lookup('password', bootstrap__secret_tree + item.name + '/pw length=32') if
       bootstrap__admin_password_global else
-       lookup('password', bootstrap__secret_tree + inventory_hostname + '/' + item.name + '/pw')) -}}
+       lookup('password', bootstrap__secret_tree + inventory_hostname + '/' + item.name + '/pw length=32')) -}}
     ', crypt.mksalt(crypt.METHOD_SHA512)))"
   register: __bootstrap__pw_hashed
   with_items: '{{ bootstrap__admin_default_users + bootstrap__admin_users }}'
@@ -34,7 +34,7 @@
     name: '{{ item.item.name }}'
     state: 'present'
     password: '{{ item.stdout }}'
-    update_password: 'on_create'
+    # update_password: 'on_create'
   with_items: '{{ __bootstrap__pw_hashed.results|d([]) }}'
   when: bootstrap__admin_password and item and item.item.name|d() and item.stdout|d()
   no_log: True
