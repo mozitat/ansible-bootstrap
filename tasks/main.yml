@@ -44,7 +44,7 @@
   tags: [ 'role::bootstrap:admin' ]
 
 # Access to sudo commands [[[
-- name: Configure system group with passwordless access in sudo
+- name: Configure system group with password(less) access in sudo
   ## `lineinfile` is used instead of `template` to allow other roles to take
   ## over `sudo` management and prevent one role reverting the work of the
   ## other role.
@@ -65,7 +65,7 @@
     - regexp: '^Defaults: %{{ bootstrap__sudo_group }} env_check\s'
       line:    'Defaults: %{{ bootstrap__sudo_group }} env_check += "SSH_CLIENT"'
     - regexp: '^%{{ bootstrap__sudo_group }}\s'
-      line:    '%{{ bootstrap__sudo_group }} ALL = (ALL:ALL) NOPASSWD: SETENV: ALL'
+      line:    '%{{ bootstrap__sudo_group }} ALL = (ALL:ALL) {{ "" if bootstrap__sudo_need_password else "NOPASSWD:" }} SETENV: ALL'
   when: bootstrap__sudo|bool
 
 - name: Ensure /etc/sudoers includes /etc/sudoers.d

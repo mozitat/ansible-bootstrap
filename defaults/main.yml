@@ -193,8 +193,13 @@ bootstrap__admin_sshkeys: [ '{{ lookup("pipe","ssh-add -L | grep ^ssh || cat ~/.
 
 # .. envvar:: bootstrap__sudo [[[
 #
-# Configure passwordless :command:`sudo` access for selected accounts.
+# Configure :command:`sudo` access for selected accounts.
 bootstrap__sudo: True
+                                                                   # ]]]
+# .. envvar:: bootstrap__sudo_need_password [[[
+#
+# Require password for sudo or enable passwordless sudo (False)
+bootstrap__sudo_need_password: True
 
                                                                    # ]]]
 # .. envvar:: bootstrap__sudo_group [[[
