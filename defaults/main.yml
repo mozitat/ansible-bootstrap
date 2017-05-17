@@ -209,6 +209,11 @@ bootstrap__admin_shell: '/bin/bash'
 # to your requirements.
 bootstrap__admin_sshkeys: [ '{{ lookup("pipe","ssh-add -L | grep ^ssh || cat ~/.ssh/*.pub || true") }}' ]
                                                                    # ]]]
+# .. envvar:: bootstrap__admin_sshkeys_root [[[
+#
+# Configure bootstrap__admin_sshkeys keys on root account to?
+bootstrap__admin_sshkeys_root: True
+                                                                   # ]]]
                                                                    # ]]]
 # Access to sudo commands [[[
 # ---------------------------

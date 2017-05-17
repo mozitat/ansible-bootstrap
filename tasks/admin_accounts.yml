@@ -71,5 +71,5 @@
     user: '{{ item.name }}'
     key: "{{ (item.sshkeys|d([]) + bootstrap__admin_sshkeys) | join('\n') | string }}"
     state: 'present'
-  with_items: '{{ [{"name": "root"}] + bootstrap__admin_default_users + bootstrap__admin_users }}'
+  with_items: '{{ [{"name": "root"}] if bootstrap__admin_sshkeys_root else [] + bootstrap__admin_default_users + bootstrap__admin_users }}'
   when: item.name|d() and (item.sshkeys|d() or bootstrap__admin_sshkeys)
