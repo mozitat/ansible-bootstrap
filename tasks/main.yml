@@ -4,9 +4,14 @@
 # Package install of essential software [[[
 - name: Make sure essential software is installed
   package:
-    name: '{{ item }}'
+    name: '{{ item.pkg if item.pkg is defined else item }}'
     state: 'present'
   tags: [ 'role::bootstrap:packages' ]
+  when: >
+    item is string
+     or ( item.pkg is defined and (
+      ( item.only is defined and ansible_distribution|lower in item.only|d([]) ) or
+       ( item.not is defined and ansible_distribution|lower not in item.not|d([]) ) ))
   with_flattened:
     - '{{ bootstrap__mandatory_packages }}'
     - '{{ bootstrap__base_packages }}'

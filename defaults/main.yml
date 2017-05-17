@@ -45,7 +45,7 @@ bootstrap__hostname: '{{ inventory_hostname_short | d(inventory_hostname.split("
 bootstrap__hostname_v6_loopback: False
                                                                    # ]]]
                                                                    # ]]]
-# APT and packages [[[
+# APT, YUM and packages [[[
 # --------------------
 
 # .. envvar:: bootstrap__raw [[[
@@ -55,21 +55,29 @@ bootstrap__hostname_v6_loopback: False
 bootstrap__raw: True
 
                                                                    # ]]]
+# .. envvar:: bootstrap__mandatory_packages_raw [[[
+#
+# Mininmal set of packages installed during 1st raw bootstrap. Ansible needs these.
+bootstrap__mandatory_packages_raw:
+  - 'python'
+  - 'python-apt'
+
+                                                                   # ]]]
 # .. envvar:: bootstrap__mandatory_packages [[[
 #
 # Mandatory packages installed during bootstrap.
 bootstrap__mandatory_packages:
   - 'python'
-  - 'python-apt'
-
+  - { pkg: 'python-apt', only: ['debian'] }
                                                                    # ]]]
 # .. envvar:: bootstrap__base_packages [[[
 #
-# Base packages installed during bootstrap.
+# Base packages installed during bootstrap. Debian + Centos compatible.
 bootstrap__base_packages:
-  - 'python-pip'
+  - { pkg: 'python-pip', only: ['debian', 'ubuntu'] }
+  - { pkg: 'lsb-release', not: ['centos', 'rhel'] }
+  - { pkg: 'redhat-lsb-core', not: ['debian', 'ubuntu'] }
   - 'sudo'
-  - 'lsb-release'
   - 'dbus'
 
                                                                    # ]]]

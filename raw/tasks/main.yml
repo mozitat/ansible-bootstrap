@@ -1,5 +1,9 @@
 ---
 
 - name: Update APT repositories, install mandatory packages
-  raw:  'apt-get update ; apt-get --no-install-recommends -yq install {{ bootstrap__mandatory_packages | join(" ") }}'
+  raw: >
+    PKGS="{{ bootstrap__mandatory_packages_raw | join(" ") }}";
+      if test -f /etc/debian_version; then
+       apt-get update ; apt-get --no-install-recommends -yq install $PKGS;
+        else yum check-updates; yum -y install $PKGS; fi
   when: bootstrap__raw|bool
