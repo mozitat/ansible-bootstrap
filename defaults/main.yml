@@ -90,10 +90,32 @@ bootstrap__packages: []
 # System administrator accounts [[[
 # ---------------------------------
 
+# .. envvar:: bootstrap__secret_tree [[[
+#
+# If :ref:`bootstrap__ref_admin_password` is used, which secret tree (folder)
+# to use.
+bootstrap__secret_tree: 'secret/cred/'
+
+                                                                   # ]]]
 # .. envvar:: bootstrap__admin [[[
 #
 # Enable configuration of administrator accounts.
 bootstrap__admin: True
+
+                                                                   # ]]]
+# .. envvar:: bootstrap__admin_password [[[
+#
+# Set password for administrator accounts. It can be defined (as cleartext) individually
+# as value under the 'password' key in bootstrap__admin_users list. Or if not
+# debops.secret 'secret' directory is looked up.
+bootstrap__admin_password: False
+
+                                                                   # ]]]
+# .. envvar:: bootstrap__admin_password_global [[[
+#
+# For one admin account use the same password on all hosts.
+# Only applicable if debops.secret lookup is used.
+bootstrap__admin_password_global: False
 
                                                                    # ]]]
 # .. envvar:: bootstrap__admin_system [[[

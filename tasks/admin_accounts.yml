@@ -13,7 +13,33 @@
     system: True
   with_items: '{{ bootstrap__admin_groups }}'
 
-- name: Create admin accounts
+# Workaround: The password_hash('sha512') filter creates hashes with rounds=656000
+# parameter, which would slow down ansible quite drastically.
+- name: Compute crypt password hash and create secret if undefined
+  shell: >
+    python -c "import crypt; print(crypt.crypt('
+    {{- item.password if item.password is defined else
+     (lookup('password', bootstrap__secret_tree + item.name + '/pw') if
+      bootstrap__admin_password_global else
+       lookup('password', bootstrap__secret_tree + inventory_hostname + '/' + item.name + '/pw')) -}}
+    ', crypt.mksalt(crypt.METHOD_SHA512)))"
+  register: __bootstrap__pw_hashed
+  with_items: '{{ bootstrap__admin_default_users + bootstrap__admin_users }}'
+  when: bootstrap__admin_password and item.name|d()
+  no_log: True
+  changed_when: False
+
+- name: Create admin accounts, phase 1 set password
+  user:
+    name: '{{ item.item.name }}'
+    state: 'present'
+    password: '{{ item.stdout }}'
+    update_password: 'on_create'
+  with_items: '{{ __bootstrap__pw_hashed.results|d([]) }}'
+  when: bootstrap__admin_password and item and item.item.name|d() and item.stdout|d()
+  no_log: True
+
+- name: Create admin accounts, phase 2 set properties
   user:
     name: '{{ item.name }}'
     state: 'present'
