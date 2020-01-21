@@ -17,11 +17,11 @@
 # parameter, which would slow down ansible quite drastically.
 - name: Compute crypt password hash and create secret if undefined
   shell: >
-    python -c "import crypt; print(crypt.crypt('
+    python3 -c "import crypt; print(crypt.crypt('
     {{- item.password if item.password is defined else
-     (lookup('password', bootstrap__secret_tree + item.name + '/pw length=32') if
+     (lookup('password', bootstrap__secret_tree + '/' + item.name + '/pw length=32') if
       bootstrap__admin_password_global else
-       lookup('password', bootstrap__secret_tree + inventory_hostname + '/' + item.name + '/pw length=32')) -}}
+       lookup('password', bootstrap__secret_tree + '/' + inventory_hostname + '/' + item.name + '/pw length=32')) -}}
     ', crypt.mksalt(crypt.METHOD_SHA512)))"
   register: __bootstrap__pw_hashed
   with_items: '{{ bootstrap__admin_default_users + bootstrap__admin_users }}'

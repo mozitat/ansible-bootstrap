@@ -94,7 +94,7 @@ bootstrap__packages: []
 #
 # If :ref:`bootstrap__ref_admin_password` is used, which secret tree (folder)
 # to use.
-bootstrap__secret_tree: 'secret/cred/'
+bootstrap__secret_tree: '{{ hostvars[groups.all.0].inventory_dir | realpath }}/../secret/cred'
 
                                                                    # ]]]
 # .. envvar:: bootstrap__admin [[[
